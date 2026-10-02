@@ -9,7 +9,7 @@ pipeline {
         // Etapa 1: Checkout del código desde GitHub
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/monkeyProgrammer7/REPO-BACKEND.git'
+                git branch: 'main', url: 'https://github.com/monkeyProgrammer7/JenkinsBackend.git'
             }
         }
 
