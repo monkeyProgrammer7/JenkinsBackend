@@ -86,4 +86,13 @@ describe('API de dispositivos', () => {
     const summary = await request(app).get('/api/devices/summary')
     expect(summary.body).toEqual({ total: 5, online: 3, offline: 1, maintenance: 1 })
   })
+
+  // Prueba que falla a propósito para ver cómo Jenkins reporta un build fallido
+  it('rechaza crear un dispositivo con un nombre duplicado (demo: falla)', async () => {
+    const res = await request(app)
+      .post('/api/devices')
+      .send({ name: 'Camión 17', type: 'GPS', location: 'Medellín' })
+    // Falla: la API todavía no valida duplicados y responde 201
+    expect(res.status).toBe(409)
+  })
 })
