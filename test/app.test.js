@@ -71,4 +71,19 @@ describe('API de dispositivos', () => {
     const res = await request(app).get('/api/devices/summary')
     expect(res.body).toEqual({ total: 4, online: 2, offline: 1, maintenance: 1 })
   })
+
+  it('un dispositivo creado aparece en la búsqueda y en el resumen al ponerlo en línea', async () => {
+    const created = await request(app)
+      .post('/api/devices')
+      .send({ name: 'Sensor Muelle 3', type: 'Presión', location: 'Cartagena' })
+    const { id } = created.body
+
+    await request(app).patch(`/api/devices/${id}/status`).send({ status: 'online' })
+
+    const found = await request(app).get('/api/devices?status=online&search=cartagena')
+    expect(found.body.map((d) => d.id)).toEqual([id])
+
+    const summary = await request(app).get('/api/devices/summary')
+    expect(summary.body).toEqual({ total: 5, online: 3, offline: 1, maintenance: 1 })
+  })
 })
